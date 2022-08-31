@@ -16,6 +16,7 @@ node {
   
     stage('build') {
       sh 'mvn clean package'
+      sh 'docker build -t myapp .'
     }
   
     stage('deploy') {
@@ -32,7 +33,9 @@ node {
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile pubProfilesJson
       // upload package
-      sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+      // sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+      // 把docker 发布到 app service
+      sh "az webapp config container set -g $resourceGroup -n $webAppName --docker-custom-image-name myapp --docker-registry-server-url https://index.docker.io/v1/ --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-password $DOCKER_PASSWORD"
       // log out
       sh 'az logout'
     }
