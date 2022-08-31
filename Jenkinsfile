@@ -39,8 +39,7 @@ node {
       sh "docker tag myapp:latest jenkinsgetstarted.azurecr.io/myapp:latest"
       sh "docker push jenkinsgetstarted.azurecr.io/myapp:latest"
       // 把docker 发布到 app service
-      // sh "az webapp config container set -g $resourceGroup -n $webAppName --docker-custom-image-name myapp --docker-registry-server-url https://index.docker.io/v1/ --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-password $DOCKER_PASSWORD"
-
+      sh "az webapp config container set -g $resourceGroup -n $webAppName --docker-custom-image-name jenkinsgetstarted.azurecr.io/myapp:latest --docker-registry-server-url https://jenkinsgetstarted.azurecr.io --docker-registry-server-user jenkinsgetstarted --docker-registry-server-password j=BigjWxxIntUr7m73XlLKBbCsHPGB9c"
       // log out
       sh 'az logout'
     }
