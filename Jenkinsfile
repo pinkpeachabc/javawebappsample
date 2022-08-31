@@ -34,8 +34,13 @@ node {
       def ftpProfile = getFtpPublishProfile pubProfilesJson
       // upload package
       // sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+      // 把打包好的镜像推送到Azure的容器仓库
+      sh 'az acr login --name jenkinsgetstarted'
+      sh "docker tag myapp:latest jenkinsgetstarted.azurecr.io/myapp:latest"
+      sh "docker push jenkinsgetstarted.azurecr.io/myapp:latest"
       // 把docker 发布到 app service
-      sh "az webapp config container set -g $resourceGroup -n $webAppName --docker-custom-image-name myapp --docker-registry-server-url https://index.docker.io/v1/ --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-password $DOCKER_PASSWORD"
+      // sh "az webapp config container set -g $resourceGroup -n $webAppName --docker-custom-image-name myapp --docker-registry-server-url https://index.docker.io/v1/ --docker-registry-server-user $DOCKER_USERNAME --docker-registry-server-password $DOCKER_PASSWORD"
+
       // log out
       sh 'az logout'
     }
